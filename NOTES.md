@@ -147,3 +147,144 @@ renderer.setSize(sizes.width, sizes.height)
 // Render the scene from the camera's point of view
 renderer.render(scene, camera)
 ```
+
+---
+
+## 04. Transform Objects
+
+There are four properties that we can use to transform objects in Three.js:
+
+**Position**: The position of the object in the 3D space.
+
+**Scale**: The size of the object in the 3D space.
+
+**Rotation**: The rotation of the object in the 3D space.
+
+**Quaternion**: A quaternion is a mathematical representation of rotation that avoids gimbal lock and provides smooth interpolation between rotations.
+
+- Quaternion is like a rotation in 3D space
+
+All classes that inherit from the `Object3D` possess properties like `PerspectiveCamera`, `Mesh`, `Group`, etc.
+
+You can see the inheritance on the [Three.js documentation](https://threejs.org/docs/index.html#api/en/core/Object3D).
+
+Every object, every class that inherits from `Object3D` has the properties `position`, `scale`, `rotation`, and `quaternion`. These properties help us to transform objects in the 3D space.
+
+These properties will be compiled in matrices that will be used to render the objects in the scene. You don't need to worry about the matrices, but it's good to know that they exist and are used under the hood.
+
+<sub>Matrices are mathematical representations of transformations in 3D space. They are used to apply transformations like translation, rotation, and scaling to objects in the scene. In Three.js, matrices are automatically calculated and applied when you change the position, rotation, or scale of an object.
+</sub>
+
+### Moving Objects
+
+With the `position` property, we can move objects in the 3D space. The `position` property is a `Vector3` object that has three properties: `x`, `y`, and `z`.
+
+```js
+mesh.position.x = 1 // Move the mesh 1 unit to the right
+mesh.position.y = 2 // Move the mesh 2 units up
+mesh.position.z = 3 // Move the mesh 3 units forward
+```
+
+- The `position` property is relative to the object's parent. If the object has no parent, it is relative to the scene.
+
+The direction of each axis is arbitrary. In Three.js, we consider the following:
+
+- The **x-axis** is the horizontal axis, pointing to the right.
+- The **y-axis** is the vertical axis, pointing up.
+- The **z-axis** is the depth axis, pointing backward.
+
+The distance of `1` unit is arbitrary, but it is usually considered as `1 meter` in the Three.js world.
+
+You should think of `1` unit according to what you are trying to represent in your scene. For example, if you are creating a scene with buildings, `1` unit could represent `1 meter`, but if you are creating a scene with small objects like coins, `1` unit could represent `1 centimeter`.
+
+You are able to change the `position` of the mesh almost anywhere in the code, but it is a good practice to do it after you have created the mesh and added it to the scene.
+
+Remember, `position` inherits from `Vector3`, which has many useful methods. For example, you can get the length of the vector, normalize it, or add another vector to it.
+
+```js
+mesh.position.set(1, 2, 3) // Set the position of the mesh to (1, 2, 3)
+mesh.position.add(new THREE.Vector3(1, 2, 3)) // Add a vector to the position of the mesh
+mesh.position.normalize() // Normalize the position of the mesh
+mesh.position.length() // Get the length of the position vector
+```
+
+<sub>A `Vector3` is a mathematical representation of a point in 3D space. It has three properties: `x`, `y`, and `z`. You can use it to represent positions, directions, and velocities in 3D space. In Three.js, many objects inherit from `Vector3`, such as `Position`, `Scale`, and `Rotation`.
+</sub>
+
+### Axes Helper
+
+Positioning objects in 3D space can be tricky, especially when you are starting. To help you visualize the axes, Three.js provides an `AxesHelper` class that draws three lines representing the x, y, and z axes.
+
+```js
+const axesHelper = new THREE.AxesHelper(1) // 1 is the size of the axes
+scene.add(axesHelper) // Add the axes helper to the scene
+```
+
+- The `AxesHelper` takes a size parameter that determines the length of the axes. The default size is `1`, but you can change it to any value you want.
+- The x-axis is red, the y-axis is green, and the z-axis is blue.
+- The `AxesHelper` is a useful tool to visualize the axes and understand how the objects are positioned in the 3D space.
+- You can remove the `AxesHelper` from the scene when you don't need it anymore, as it is only a visual aid.
+
+```js
+scene.remove(axesHelper) // Remove the axes helper from the scene
+```
+
+### Scaling Objects
+
+Scaling objects in Three.js is done using the `scale` property. The `scale` property is also a `Vector3` object that has three properties: `x`, `y`, and `z`.
+
+```js
+mesh.scale.set(1, 1, 1) // Set the scale of the mesh to (1, 1, 1)
+mesh.scale.x = 2 // Scale the mesh 2x in the x direction
+mesh.scale.y = 3 // Scale the mesh 3x in the y direction
+mesh.scale.z = 4 // Scale the mesh 4x in the z direction
+```
+
+- The default value of each axis is `1`, which means the object is not scaled.
+- If you set the scale to `2`, the object will be twice as large in that direction. If you set it to `0.5`, the object will be half as large in that direction.
+
+### Rotating Objects
+
+Rotating objects in Three.js can be done using the `rotation` property or with a `Quaternion`.
+
+Updating one of these properties will automatically update the other, so you can use either one depending on your needs.
+
+#### Using the Rotation Property
+
+The `rotation` property is a `Euler` object that has three properties: `x`, `y`, and `z`. These properties represent the rotation of the object in radians.
+
+<sub>Euler angles are a way to represent rotations in 3D space using three angles, one for each axis (x, y, z). They are intuitive and easy to understand, but they can suffer from gimbal lock, which is a situation where two rotation axes become aligned and you lose a degree of freedom.
+</sub>
+
+```js
+mesh.rotation.set(Math.PI / 2, 0, 0) // Rotate the mesh 90 degrees around the x-axis
+mesh.rotation.x = Math.PI / 4 // Rotate the mesh 45 degrees around the x-axis
+mesh.rotation.y = Math.PI / 6 // Rotate the mesh 30 degrees around the y-axis
+mesh.rotation.z = Math.PI / 3 // Rotate the mesh 60 degrees around the z-axis
+```
+
+<sub>Radians are a unit of measurement for angles. One full rotation (360 degrees) is equal to 2π radians. In Three.js, angles are usually represented in radians, so you need to convert degrees to radians when setting the rotation.
+</sub>
+
+- When you change the `x`, `y`, or `z` properties of the `rotation`, you can imagine putting a stick through your object's center in the axis's direction and then rotating that object on that stick.
+- Be careful with the order of the rotations, as they can affect the final orientation of the object. The order of rotations is important because it determines how the rotations are applied to the object.
+- The default order of rotations in Three.js is `XYZ`, which means that the rotation around the x-axis is applied first, then the y-axis, and finally the z-axis. You can change the order of rotations by setting the `order` property of the `rotation` object.
+
+```js
+mesh.rotation.order = 'YXZ' // Change the rotation order to YXZ
+```
+
+- Gimbal lock is a situation where you have an axis that gets locked and you can no longer rotate around that axis. This can happen when using Euler angles for rotation, as the rotations are applied in a specific order. To avoid gimbal lock, you can use quaternions for rotation, which do not suffer from this issue.
+
+#### Using Quaternions
+
+Euler angles are easy to understand and use, but they can be problematic when it comes to complex rotations. This is why most 3D engines, including Three.js, use quaternions for rotation.
+
+A quaternion also expresses a rotation but in a more mathematically stable way. It is a four-dimensional vector that can represent a rotation in 3D space without suffering from gimbal lock.
+
+```js
+mesh.quaternion.set(0, 0, 0, 1) // Set the quaternion to no rotation
+mesh.quaternion.setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0)) // Set the quaternion from an Euler angle
+```
+
+- The `setFromEuler` method converts an Euler angle to a quaternion.
