@@ -288,3 +288,21 @@ mesh.quaternion.setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0)) // Set the quat
 ```
 
 - The `setFromEuler` method converts an Euler angle to a quaternion.
+
+### Scene Graph
+
+Sometimes you will create complex objects. Imagine you are creating a house with walls, windows, bushes, and a roof. Towards the end, you realize that its too small, so you want to scale the whole house up. If you have all the parts of the house as separate objects, you will have to scale each one individually. This is where the scene graph comes in handy.
+
+What you can do is create a scene graph, which is a group of objects that are treated as a single object. You can create a `Group` object and add all the parts of the house to it. Then, you can scale the group instead of each individual part.
+
+- You can put objects inside groups and use `position`, `rotation`, and `scale` on the group. This will apply the transformations to all the objects inside the group.
+
+```js
+const group = new THREE.Group() // Create a group
+group.add(mesh) // Add the mesh to the group
+group.position.set(1, 2, 3) // Set the position of the group
+group.scale.set(2, 2, 2) // Scale the group
+scene.add(group) // Add the group to the scene
+```
+
+- The group will now have the position and scale applied to it, and all the objects inside the group will inherit those transformations.
